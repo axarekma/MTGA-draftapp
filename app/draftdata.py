@@ -44,14 +44,13 @@ class DraftData:
         return "data/" + self.expansion + self.format + self.deck_color + ".pkl"
 
     def load(self):
-        self.df = pd.read_pickle(self.df_name)
 
-        # try:
-        #     self.df = pd.read_pickle(self.df_name)
-        # except:
-        #     print(f"Failed to load {self.df_name}, scraping")
-        #     self.update()
-        #     self.load()
+        try:
+            self.df = pd.read_pickle(self.df_name)
+        except:
+            print(f"Failed to load {self.df_name}, scraping")
+            self.update()
+            self.load()
 
     def save(self):
         self.df.to_pickle(self.df_name)
@@ -70,6 +69,8 @@ class DraftData:
 
     def process(self, gp_wp=None, gih_wp=None, gpweight=True):
         df = self.df.copy()
+        GP_score = df["GP WR"].isna().sum() / len(df)
+        GIH_score = df["GIH WR"].isna().sum() / len(df)
 
         df["GP WR"] = df["GP WR"].apply(percentage2val)
         df["OH WR"] = df["OH WR"].apply(percentage2val)
@@ -87,39 +88,25 @@ class DraftData:
         mean_wp = gp_wp if gp_wp else self.gp_wp
         mean_gih = gih_wp if gih_wp else self.gih_wp
 
-        # print(f"data wp {self.gp_wp} {self.gih_wp} norm {mean_wp} {mean_gih}")
-
-        data = df[["ATA", "GP WR"]].dropna(how="any", axis=0).to_numpy()
-        fgp = np.poly1d(np.polyfit(data[:, 0], data[:, 1], 1))
-
-        data = df[["ATA", "GIH WR"]].dropna(how="any", axis=0).to_numpy()
-        fgih = np.poly1d(np.polyfit(data[:, 0], data[:, 1], 1))
-
-        data = df[["ATA", "OH WR"]].dropna(how="any", axis=0).to_numpy()
-        foh = np.poly1d(np.polyfit(data[:, 0], data[:, 1], 1))
-
-        df["fgp"] = fgp(df["ATA"])
-        df["foh"] = foh(df["ATA"])
-        df["fgih"] = fgih(df["ATA"])
-
-        # df["GP WR"].fillna(df["fgp"], inplace=True)
-        # df["OH WR"].fillna(df["foh"], inplace=True)
-        # df["GIH WR"].fillna(df["fgih"], inplace=True)
-        # df["GP WR"].fillna(df["GP WR"].mean(), inplace=True)
-        # df["OH WR"].fillna(df["OH WR"].mean(), inplace=True)
-        # df["GIH WR"].fillna(df["GIH WR"].mean(), inplace=True)
         df["GP WR"].fillna(0, inplace=True)
         df["OH WR"].fillna(0, inplace=True)
         df["GIH WR"].fillna(0, inplace=True)
         df["IWD"].fillna(0, inplace=True)
 
         df["WP"] = (df["GP WR"] + df["GIH WR"]) / 2
-        if gpweight:
-            df["weight"] = (df["# GP"] / df["# Picked"]).clip(lower=0.5)
+
+        if GP_score > 0.95 or GIH_score > 0.95:
+            print(" \n", self.deck_color, "has less that 5% data")
+            df["weight"] = 0
+            df["metric"] = 0
+            df["metric_ih"] = 0
         else:
-            df["weight"] = (df["# GP"] / df["# Picked"]).clip(lower=0.1, upper=1.0)
-        df["metric"] = df["weight"] * (df["WP"] - mean_wp)
-        df["metric_ih"] = df["weight"] * (df["GIH WR"] - mean_gih)
+            if gpweight:
+                df["weight"] = (df["# GP"] / df["# Picked"]).clip(lower=0.5)
+            else:
+                df["weight"] = (df["# GP"] / df["# Picked"]).clip(lower=0.1, upper=1.0)
+            df["metric"] = df["weight"] * (df["WP"] - mean_wp)
+            df["metric_ih"] = df["weight"] * (df["GIH WR"] - mean_gih)
 
         df["weight"] = df["weight"].astype(float).round(decimals=2)
         df["ALSA"] = df["ALSA"].astype(float).round(decimals=2)

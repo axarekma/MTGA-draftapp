@@ -6,7 +6,7 @@ Flask app that tracks the MTGA logs and shows the agglomerated 17lands data and 
 - run flask app
 
 ```
-set FLASK_APP=hello
+set FLASK_APP=app
 flask run
 ```
 

@@ -14,6 +14,8 @@ flask run
 - Select primary color(s) to filter color data and "Submit Colors" . If over 2 colors are checked colors defaults to None
 - The pick will default to the current (latest in log). To check previous picks, use dropdown and select Submit Pick
 
+:warning: **Due to MTGA logs, the first pick will not be visible. Tracking starts P1P2.**
+
 #### Page: Deck
 - An empty deck will default to the whole data table.
 - Paste the string from MTGA export to use your pool.

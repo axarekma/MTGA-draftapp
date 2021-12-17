@@ -6,6 +6,7 @@ import json
 import os
 from werkzeug.datastructures import MultiDict
 from wtforms import BooleanField
+import hashlib
 
 from app import app
 from app.forms import FormatForm, DeckForm, PickForm, DecklistForm
@@ -46,6 +47,15 @@ def cardlist():
         pick = session["pick_args"]["pick"]
     tracker.update_lines()
     return tracker.cardlist(pick)
+
+
+@app.route("/status", methods=["GET"])
+def status():
+    with open(app.config["LOG_PATH"], "rb") as f:
+        file_hash = hashlib.md5()
+        while chunk := f.read(8192):
+            file_hash.update(chunk)
+    return jsonify(file_hash.hexdigest())
 
 
 @app.route("/deck.html", methods=["GET", "POST"])

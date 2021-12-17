@@ -36,6 +36,33 @@
         </div>
         {% endblock %}
     </div>
+
+    <script>
+        const refresh = () => {
+            // We should probably just fetch new data instead of refreshing entire page...
+            window.location.reload();
+        }
+
+        const pollingInterval = 2000;
+        var checksum;
+
+        const timer = setInterval(() => {
+            fetch('/status')
+                .then(r => r.json())
+                .then(checksumFromServer => {
+                    if (checksum != undefined && checksum != checksumFromServer) {
+                        // Refresh if Player.log has changed
+                        refresh();
+                    }
+                    checksum = checksumFromServer;
+                }).catch(e => {
+                    // Halt useless polling on errors
+                    console.error(e);
+                    clearInterval(timer);
+                });
+        }, pollingInterval);
+
+    </script>
 </body>
 
 </html>

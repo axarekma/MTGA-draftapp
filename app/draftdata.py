@@ -137,7 +137,7 @@ class DraftData:
                 "Color",
                 "Rarity",
                 "ALSA",
-                # "WP",
+                "WP",
                 # "OH WR",
                 "GIH WR",
                 "IWD",

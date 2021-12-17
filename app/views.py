@@ -69,13 +69,7 @@ def decklist():
     else:
         x = draft.all_frame(col=session_color())
 
-    if "deck_args" in session:
-        deckform.node_w.checked = session["deck_args"]["node_w"]
-        deckform.node_u.checked = session["deck_args"]["node_u"]
-        deckform.node_b.checked = session["deck_args"]["node_b"]
-        deckform.node_r.checked = session["deck_args"]["node_r"]
-        deckform.node_g.checked = session["deck_args"]["node_g"]
-
+    deckform.set_with_session(session)
     return render_template(
         "deck.html",
         data=x.to_html(table_id="example"),
@@ -91,19 +85,16 @@ def index():
     pickform = PickForm()
 
     if formatform.submitformat.data and formatform.validate():
-        print("submit formatform")
         session["format_args"] = formatform.data
         session["format_args"].pop("csrf_token")
         session["format_args"].pop("submitformat")
 
     if deckform.submitdeck.data and deckform.validate():
-        print("submit deckform")
         session["deck_args"] = deckform.data
         session["deck_args"].pop("csrf_token")
         session["deck_args"].pop("submitdeck")
 
     if pickform.submitpick.data and pickform.validate():
-        print("submit pickform")
         session["pick_args"] = pickform.data
         session["pick_args"].pop("csrf_token")
         session["pick_args"].pop("submitpick")
@@ -119,12 +110,7 @@ def index():
         else PickForm()
     )
 
-    if "deck_args" in session:
-        deckform.node_w.checked = session["deck_args"]["node_w"]
-        deckform.node_u.checked = session["deck_args"]["node_u"]
-        deckform.node_b.checked = session["deck_args"]["node_b"]
-        deckform.node_r.checked = session["deck_args"]["node_r"]
-        deckform.node_g.checked = session["deck_args"]["node_g"]
+    deckform.set_with_session(session)
 
     if "format_args" in session:
         if draft.set != session["format_args"]["setfield"]:

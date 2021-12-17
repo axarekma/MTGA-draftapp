@@ -6,9 +6,7 @@ from wtforms import widgets
 
 
 class FormatForm(FlaskForm):
-    setfield = SelectField(
-        "Set", [DataRequired()], choices=[("VOW", "VOW"), ("MID", "MID")]
-    )
+    setfield = SelectField("Set", [DataRequired()], choices=[("VOW", "VOW")])
     formatfield = SelectField(
         "Format",
         [DataRequired()],
@@ -29,6 +27,14 @@ class DeckForm(FlaskForm):
     node_r = BooleanField("R")
     node_g = BooleanField("G")
     submitdeck = SubmitField("Submit Colors")
+
+    def set_with_session(self, session):
+        if "deck_args" in session:
+            self.node_w.checked = session["deck_args"]["node_w"]
+            self.node_u.checked = session["deck_args"]["node_u"]
+            self.node_b.checked = session["deck_args"]["node_b"]
+            self.node_r.checked = session["deck_args"]["node_r"]
+            self.node_g.checked = session["deck_args"]["node_g"]
 
 
 class PickForm(FlaskForm):

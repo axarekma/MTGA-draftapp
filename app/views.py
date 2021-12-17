@@ -64,11 +64,10 @@ def decklist():
     if decklist.submitlist.data and decklist.validate():
         session["decklist"] = decklist.data["decklist"]
 
-    x = pd.DataFrame(columns=["Deck is empty"]).to_html()
-    if "decklist" in session:
-        x = draft.draft_deck(session["decklist"], session_color()).to_html(
-            table_id="example"
-        )
+    if "decklist" in session and len(session["decklist"].strip()):
+        x = draft.draft_deck(session["decklist"], session_color())
+    else:
+        x = draft.all_frame(col=session_color())
 
     if "deck_args" in session:
         deckform.node_w.checked = session["deck_args"]["node_w"]
@@ -77,7 +76,12 @@ def decklist():
         deckform.node_r.checked = session["deck_args"]["node_r"]
         deckform.node_g.checked = session["deck_args"]["node_g"]
 
-    return render_template("deck.html", data=x, deckform=deckform, decklist=decklist)
+    return render_template(
+        "deck.html",
+        data=x.to_html(table_id="example"),
+        deckform=deckform,
+        decklist=decklist,
+    )
 
 
 @app.route("/", methods=["GET", "POST"])

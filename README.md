@@ -37,6 +37,8 @@ flask run
 - metric_ih: ditto, but for GIG WP
 - Colors data: metric: a weighted improvement over average decks of same color. Never played will have a wp of 0 and default to a large negative number.
 
+### Development
 
+Gather requirements.txt with `pipreqs .` (pip install pipreqs first) then install all with `pip install -r requirements.txt`.
 
 

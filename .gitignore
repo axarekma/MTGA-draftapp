@@ -1,0 +1,14 @@
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore -egg folder
+*.egg*/
+
+# jupyter checkpoints
+**/.ipynb_checkpoints/
+
+# vscode settings
+**/.vscode/
+

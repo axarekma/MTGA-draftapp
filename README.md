@@ -1,5 +1,7 @@
 ## MTGA-draftapp
+Flask app that tracks the MTGA logs and shows the agglomerated 17lands data and data sorted by guilds.
 
+### How to use
 - change LOG_PATH in app/configure.py to the path to the MTGA logfile
 - run flask app
 

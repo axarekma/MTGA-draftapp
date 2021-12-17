@@ -20,6 +20,19 @@ flask run
 - Select primary color(s) to filter color data and "Submit Colors" . If over 2 colors are checked colors defaults to None
 
 
+### Example
+![Example view](example.jpg)
+
+#### Leged:
+- ALSA - Average Last Seen At
+- WP - weighted win%
+- GIH WP - Game In Hand win%
+- IWD - improvement when drawn
+- weight - (number of games played)/(number of time picked) 
+- metric: a weighted improvement over average decks of same color.
+- metric_ih: ditto, but for GIG WP
+- Colors data: metric: a weighted improvement over average decks of same color. Never played will have a wp of 0 and default to a large negative number.
+
 
 
 

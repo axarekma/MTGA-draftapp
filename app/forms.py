@@ -6,7 +6,7 @@ from wtforms import widgets
 
 
 class FormatForm(FlaskForm):
-    sets = ["VOW", "MID", "AFR", "STX", "KHM"]
+    sets = ["NEO", "VOW", "MID", "AFR", "STX", "KHM"]
     setfield = SelectField("Set", [DataRequired()], choices=[(s, s) for s in sets])
     formatfield = SelectField(
         "Format",
@@ -56,4 +56,3 @@ class PickForm(FlaskForm):
 class DecklistForm(FlaskForm):
     decklist = TextAreaField()
     submitlist = SubmitField("Submit List")
-

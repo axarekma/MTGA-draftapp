@@ -14,7 +14,7 @@ from app.draftdata import SetData
 from app.utils import Tracker
 import pandas as pd
 
-draft = SetData(code="VOW", draftmode="PremierDraft")
+draft = SetData(code="NEO", draftmode="PremierDraft")
 tracker = Tracker(app.config["LOG_PATH"])
 tracker.update_lines()
 
@@ -34,6 +34,8 @@ def session_color():
     if session["deck_args"]["node_g"]:
         col = col + "G"
     print("col = ", col)
+    if len(col) == 0:
+        return None
     if len(col) > 2:
         print("Too many colors. Showing all")
         return None

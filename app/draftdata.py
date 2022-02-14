@@ -306,7 +306,7 @@ def deckdf(deck, df):
     import re
 
     rows = []
-    p = re.compile(r"([0-9]) ([^\(]*) \(([\w]*)\) ([\d]*)$")
+    p = re.compile(r"([0-9]) ([^\(]*)( \(([\w]*)\))?( [\d]*)?$")
     for line in deck.split("\n"):
         line = line.rstrip()
         m = p.match(line)

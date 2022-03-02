@@ -105,8 +105,17 @@ class DraftData:
                 df["weight"] = (df["# GP"] / df["# Picked"]).clip(lower=0.5)
             else:
                 df["weight"] = (df["# GP"] / df["# Picked"]).clip(lower=0.1, upper=1.0)
-            df["metric"] = df["weight"] * (df["WP"] - mean_wp)
-            df["metric_ih"] = df["weight"] * (df["GIH WR"] - mean_gih)
+
+            ispos = (df["WP"] - mean_wp) >= 0
+            isneg = (df["WP"] - mean_wp) < 0
+            excess_wp = df["WP"] - mean_wp
+
+            isposih = (df["WP"] - mean_wp) >= 0
+            isnegih = (df["WP"] - mean_wp) < 0
+            excess_gih = df["GIH WR"] - mean_gih
+
+            df["metric"] = ispos * df["weight"] * excess_wp + isneg * excess_wp
+            df["metric_ih"] = isposih * df["weight"] * excess_gih + isnegih * excess_gih
 
         df["weight"] = df["weight"].astype(float).round(decimals=2)
         df["ALSA"] = df["ALSA"].astype(float).round(decimals=2)
@@ -152,7 +161,7 @@ def highlight(s, names, pick=1):
     is_max = (s > 0) & (s == s_val.max())
     is_positive = s >= 0
     is_negative = s < 0
-    is_bad = s < -10
+    is_bad = s < -50
 
     color = ["#d7191c", "#fdae61", "#a6d96a", "#1a9641"]
     style_min = f"background-color: {color[0]}"
@@ -250,16 +259,18 @@ class SetData:
         for colorpair in self.col_tag:
             if col is None or col in colorpair:
                 # df_all[colorpair] = self.coldata[colorpair].df_proc["WP"]
-                df_all[colorpair] = self.coldata[colorpair].df_proc["metric_ih"]
+                df_col = self.coldata[colorpair].df_proc[["Name", "metric_ih"]]
+                df_all = df_all.merge(df_col, how="outer", on="Name")
+                df_all = df_all.rename(
+                    columns={"metric_ih_x": "metric_ih", "metric_ih_y": f"{colorpair}"}
+                )
+                df_all[colorpair].fillna(df_all[colorpair].min(), inplace=True)
+                df_all[colorpair] = df_all[colorpair].astype("int32")
+
         return df_all
 
     def pauper_frame(self, col=None):
-        df_all = self.setdata.df_proc.copy()
-        for colorpair in self.col_tag:
-            if col is None or col in colorpair:
-                # df_all[colorpair] = self.coldata[colorpair].df_proc["WP"]
-                df_all[colorpair] = self.coldata[colorpair].df_proc["metric_ih"]
-
+        df_all = self.all_frame(col=col)
         return df_all[df_all["Rarity"].str.contains("|".join(["C", "U"]))]
 
     def draft_frame(self, cards, col=None):
@@ -289,14 +300,25 @@ class SetData:
             pick=pick_no,
         )
 
-    def draft_deck(self, deck, col=None, col2=None):
+    def draft_deck(self, deck, col=None):
         df_all = self.setdata.df_proc.copy()
         for colorpair in self.col_tag:
             if col is None or col in colorpair:
-                df_all[colorpair] = self.coldata[colorpair].df_proc["metric_ih"]
-                df_all[f"{colorpair}_GIH"] = self.coldata[colorpair].df_proc["GIH WR"]
-            if col2 is not None and col2 in colorpair:
-                df_all[colorpair] = self.coldata[colorpair].df_proc["metric_ih"]
+
+                df_col = self.coldata[colorpair].df_proc[
+                    ["Name", "metric_ih", "GIH WR"]
+                ]
+                df_all = df_all.merge(df_col, how="outer", on="Name")
+                df_all = df_all.rename(
+                    columns={
+                        "metric_ih_x": "metric_ih",
+                        "metric_ih_y": f"{colorpair}",
+                        "GIH WR_x": "GIH WR",
+                        "GIH WR_y": f"GIH {colorpair}",
+                    }
+                )
+                # df_all[colorpair].fillna(df_all[colorpair].min(), inplace=True)
+                # df_all[colorpair] = df_all[colorpair].astype("int32")
 
         # return deckdf(deck, df_all).sort_values(["metric"], ascending=False)
         return deckdf(deck, df_all).sort_values([col, "metric"], ascending=False)

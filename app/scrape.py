@@ -38,7 +38,7 @@ def getdata(expansion, format="PremierDraft", deck_color=None):
         EC.visibility_of_element_located((By.XPATH, "//div[@class='list_card_name']"))
     )
 
-    time.sleep(10)
+    time.sleep(5)
 
     soup = BeautifulSoup(browser.page_source, "html.parser")
 

@@ -76,7 +76,7 @@ class DraftData:
         df["OH WR"] = df["OH WR"].apply(percentage2val)
         df["GD WR"] = df["GD WR"].apply(percentage2val)
         df["GIH WR"] = df["GIH WR"].apply(percentage2val)
-        df["GND WR"] = df["GND WR"].apply(percentage2val)
+        # df["GND WR"] = df["GND WR"].apply(percentage2val)
         df["IWD"] = df["IWD"].apply(pp2val)
         # df["IWD"].fillna(0.0, inplace=True)
         df["Color"].fillna("", inplace=True)

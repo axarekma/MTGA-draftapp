@@ -70,7 +70,7 @@ class Tracker:
 
     def update_lines(self):
         self.draftpacks_id = []
-        with open(self.filename, "r") as read_obj:
+        with open(self.filename, "r", encoding="utf8") as read_obj:
             # Read all lines in the file one by one
             for line in read_obj:
                 cards = self.check_line(line)

@@ -14,7 +14,7 @@ from app.draftdata import SetData
 from app.utils import Tracker
 import pandas as pd
 
-draft = SetData(code="ONE", draftmode="PremierDraft")
+draft = SetData(code="MKM", draftmode="PremierDraft")
 tracker = Tracker(app.config["LOG_PATH"])
 tracker.update_lines()
 

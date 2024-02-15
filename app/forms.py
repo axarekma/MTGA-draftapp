@@ -6,7 +6,7 @@ from wtforms import widgets
 
 
 class FormatForm(FlaskForm):
-    sets = ["ONE", "NEO", "VOW", "MID", "AFR", "STX", "KHM"]
+    sets = ["MKM","LCI","WOE","LTR","MOM","ONE", "NEO", "VOW", "MID", "AFR", "STX", "KHM"]
     setfield = SelectField("Set", [DataRequired()], choices=[(s, s) for s in sets])
     formatfield = SelectField(
         "Format",

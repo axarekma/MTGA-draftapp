@@ -4,10 +4,11 @@ from app.utils import add_set
 # Use this to update the 17lands datatables
 if __name__ == "__main__":
     # add set from scryfall
-    add_set("ONE")
+    set_code = 'MKM'
+    # add_set(set_code)
 
     # update all data
-    draft = SetData(code="ONE", draftmode="PremierDraft")
+    draft = SetData(code=set_code, draftmode="PremierDraft")
     draft.update_data()
 
     # update specific colorpair
